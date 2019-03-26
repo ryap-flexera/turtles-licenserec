@@ -8,7 +8,7 @@ language: go
 go:
   - 1.12.1
 
-go_import_path: github.com/ryap-flexera/turtles-licenserec
+go_import_path: turtles-licenserec
 
 #install:
   #- make
@@ -21,7 +21,7 @@ after_success:
   - pip install --user awscli # install aws cli w/o sudo
   - export PATH=$PATH:$HOME/.local/bin # put aws in the path
   - pwd
-  - cd $GOPATH/src/beacon/front_api_service
+  - cd $GOPATH/github.com/ryap-flexera/turtles-licenserec/license_rec_api
   - docker build -t frontapi_service-$TRAVIS_BUILD_NUMBER .
   - docker image ls
   - docker tag frontapi_service-$TRAVIS_BUILD_NUMBER:latest 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
