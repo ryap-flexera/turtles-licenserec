@@ -1,0 +1,22 @@
+sudo: required
+
+service:
+  - docker
+
+language: go
+
+go:
+  - 1.12.1
+
+env:
+  - BRANCH_LOWERCASE=
+
+go_import_path: turtles-licenserec
+
+install:
+  - ./make
+
+after_success:
+  - cd $GOPATH/_infra
+  - ./after_success.sh
+
