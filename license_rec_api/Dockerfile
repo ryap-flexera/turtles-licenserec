@@ -2,11 +2,11 @@ FROM golang:1.12.1
 
 LABEL maintainer="XX XX <XX@XX.com>"
 
-RUN mkdir -p beacon/front_api_service
+RUN mkdir -p turtles-licenserec/license_rec_api
 
-WORKDIR turtles-licenserec/license_rec_api
+WORKDIR $GOPATH/src/turtles-licenserec/license_rec_api
 
-COPY cmd/license_rec_api/license_rec_api  .
+COPY cmd/license_rec_api/licenseapi_server  .
 
 # This container exposes port 8080 to the outside world
 EXPOSE 8080
