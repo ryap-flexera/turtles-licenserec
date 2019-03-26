@@ -5,7 +5,7 @@ import (
 	"log"
 	"strconv"
 
-	licenserec "github.com/flexera/turtles-licenserec/license_rec_api/gen/license_rec"
+	licenserec "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/license_rec"
 )
 
 var licenses = make(map[int]int)

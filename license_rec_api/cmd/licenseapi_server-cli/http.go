@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	cli "github.com/flexera/turtles-licenserec/license_rec_api/gen/http/cli/licenseapi_server"
+	cli "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/http/cli/licenseapi_server"
 	"goa.design/goa"
 	goahttp "goa.design/goa/http"
 )

@@ -11,8 +11,8 @@ import (
 	"strings"
 	"sync"
 
-	licensereconcileapi "github.com/flexera/turtles-licenserec/license_rec_api"
-	licenserec "github.com/flexera/turtles-licenserec/license_rec_api/gen/license_rec"
+	licensereconcileapi "github.com/ryap-flexera/turtles-licenserec/license_rec_api"
+	licenserec "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/license_rec"
 )
 
 func main() {

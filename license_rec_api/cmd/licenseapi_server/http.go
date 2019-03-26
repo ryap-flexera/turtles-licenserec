@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	licenserecsvr "github.com/flexera/turtles-licenserec/license_rec_api/gen/http/license_rec/server"
-	licenserec "github.com/flexera/turtles-licenserec/license_rec_api/gen/license_rec"
+	licenserecsvr "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/http/license_rec/server"
+	licenserec "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/license_rec"
 	goahttp "goa.design/goa/http"
 	httpmdlwr "goa.design/goa/http/middleware"
 	"goa.design/goa/middleware"
