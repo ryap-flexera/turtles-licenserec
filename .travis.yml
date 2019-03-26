@@ -8,9 +8,6 @@ language: go
 go:
   - 1.12.1
 
-env:
-  - BRANCH_LOWERCASE=
-
 go_import_path: turtles-licenserec
 
 #install:
@@ -25,10 +22,9 @@ after_success:
   - export PATH=$PATH:$HOME/.local/bin # put aws in the path
   - pwd
   - cd $GOPATH/src/beacon/front_api_service
-  - export BRANCH_LOWERCASE=`echo $TRAVIS_BRANCH | tr '[:upper:]' '[:lower:]'`
-  - docker build -t frontapi_service-$BRANCH_LOWERCASE-$TRAVIS_BUILD_NUMBER .
+  - docker build -t frontapi_service-$TRAVIS_BUILD_NUMBER .
   - docker image ls
-  - docker tag frontapi_service-$BRANCH_LOWERCASE-$TRAVIS_BUILD_NUMBER:latest 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
+  - docker tag frontapi_service-$TRAVIS_BUILD_NUMBER:latest 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
   - $(aws ecr get-login --no-include-email --region ap-southeast-2)
   - docker push 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
 
