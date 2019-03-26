@@ -13,13 +13,9 @@ env:
 
 go_import_path: turtles-licenserec
 
-install:
-  - #make
-  - pwd
-  - ls -la
-  - go get -d -v ./...
-  - cd license_rec_api/cmd/licenseapi_server
-  - go build
+#install:
+  #- make
+
 
 after_success:
   #- cd $GOPATH/_infra
