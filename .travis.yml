@@ -8,7 +8,7 @@ language: go
 go:
   - 1.12.1
 
-go_import_path: turtles-licenserec
+go_import_path: github.com/ryap-flexera/turtles-licenserec
 
 #install:
   #- make
