@@ -14,7 +14,7 @@ env:
 go_import_path: turtles-licenserec
 
 install:
-  - ./make
+  - make
 
 after_success:
   - cd $GOPATH/_infra
