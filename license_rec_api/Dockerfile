@@ -1,15 +1,15 @@
 FROM golang:1.12.1
 
-LABEL maintainer="XX XX <XX@XX.com>"
+WORKDIR $GOPATH/src/github.com/flexera-ryap/turtles-licenserec/license_rec_api
 
-RUN mkdir -p turtles-licenserec/license_rec_api
+COPY . .
 
-WORKDIR $GOPATH/src/turtles-licenserec/license_rec_api
+RUN go get -d -v ./...
 
-COPY cmd/license_rec_api/licenseapi_server  .
+RUN go install -v ./...
 
 # This container exposes port 8080 to the outside world
 EXPOSE 8080
 
 # Run the executable
-ENTRYPOINT ["license_rec_api"]
+ENTRYPOINT ["licenseapi_server"]
