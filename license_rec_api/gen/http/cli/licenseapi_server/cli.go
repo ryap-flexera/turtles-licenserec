@@ -3,7 +3,7 @@
 // LicenseAPIServer HTTP client CLI support package
 //
 // Command:
-// $ goa gen github.com/flexera/turtles-licenserec/license_rec_api/design
+// $ goa gen github.com/ryap-flexera/turtles-licenserec/license_rec_api/design
 
 package cli
 
@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"os"
 
-	licenserecc "github.com/flexera/turtles-licenserec/license_rec_api/gen/http/license_rec/client"
+	licenserecc "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/http/license_rec/client"
 	goa "goa.design/goa"
 	goahttp "goa.design/goa/http"
 )

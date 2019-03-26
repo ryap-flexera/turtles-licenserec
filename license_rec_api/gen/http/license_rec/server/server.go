@@ -3,7 +3,7 @@
 // licenseRec HTTP server
 //
 // Command:
-// $ goa gen github.com/flexera/turtles-licenserec/license_rec_api/design
+// $ goa gen github.com/ryap-flexera/turtles-licenserec/license_rec_api/design
 
 package server
 
@@ -11,7 +11,7 @@ import (
 	"context"
 	"net/http"
 
-	licenserec "github.com/flexera/turtles-licenserec/license_rec_api/gen/license_rec"
+	licenserec "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/license_rec"
 	goa "goa.design/goa"
 	goahttp "goa.design/goa/http"
 )

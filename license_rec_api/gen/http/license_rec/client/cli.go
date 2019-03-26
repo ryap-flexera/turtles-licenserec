@@ -3,7 +3,7 @@
 // licenseRec HTTP client CLI support package
 //
 // Command:
-// $ goa gen github.com/flexera/turtles-licenserec/license_rec_api/design
+// $ goa gen github.com/ryap-flexera/turtles-licenserec/license_rec_api/design
 
 package client
 
@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strconv"
 
-	licenserec "github.com/flexera/turtles-licenserec/license_rec_api/gen/license_rec"
+	licenserec "github.com/ryap-flexera/turtles-licenserec/license_rec_api/gen/license_rec"
 )
 
 // BuildGetLicensePayload builds the payload for the licenseRec GetLicense

@@ -3,7 +3,7 @@
 // HTTP request path constructors for the licenseRec service.
 //
 // Command:
-// $ goa gen github.com/flexera/turtles-licenserec/license_rec_api/design
+// $ goa gen github.com/ryap-flexera/turtles-licenserec/license_rec_api/design
 
 package server
 
