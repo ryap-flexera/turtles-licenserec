@@ -21,7 +21,7 @@ after_success:
   - pip install --user awscli # install aws cli w/o sudo
   - export PATH=$PATH:$HOME/.local/bin # put aws in the path
   - pwd
-  - cd $GOPATH/github.com/ryap-flexera/turtles-licenserec/license_rec_api
+  - cd $GOPATH/src/turtles-licenserec/license_rec_api
   - docker build -t frontapi_service-$TRAVIS_BUILD_NUMBER .
   - docker image ls
   - docker tag frontapi_service-$TRAVIS_BUILD_NUMBER:latest 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
