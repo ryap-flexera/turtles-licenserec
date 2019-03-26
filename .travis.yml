@@ -22,9 +22,9 @@ after_success:
   - export PATH=$PATH:$HOME/.local/bin # put aws in the path
   - pwd
   - cd $GOPATH/src/turtles-licenserec/license_rec_api
-  - docker build -t frontapi_service-$TRAVIS_BUILD_NUMBER .
+  - docker build -t turtles-licenserec .
   - docker image ls
-  - docker tag frontapi_service-$TRAVIS_BUILD_NUMBER:latest 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
+  - docker tag turtles-licenserec:latest 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
   - $(aws ecr get-login --no-include-email --region ap-southeast-2)
   - docker push 754533604493.dkr.ecr.ap-southeast-2.amazonaws.com/flexera/turtles/innovations:latest
 
