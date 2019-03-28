@@ -20,13 +20,25 @@ var _ = Service("licenseRec", func() {
 		})
 	})
 
-	Method("UpdateLicense", func() {
-		Description("Increments license count given the LicenseID")
+	Method("UpdateDeviceLicense", func() {
+		Description("Increments device license count given the LicenseID")
 		Result(Int)
 		Payload(LicenseObject)
 		HTTP(func() {
 			POST("/post/{LicenseID}")
 			Param("LicenseID", Int)
+			Response(StatusOK)
+		})
+	})
+
+	Method("UpdateDeviceLicenseWithValue", func() {
+		Description("Increments license count given value")
+		Result(Int)
+		Payload(LicenseConsumption)
+		HTTP(func() {
+			POST("/post/{LicenseID}/{ConsumptionValue}")
+			Param("LicenseID", Int)
+			Param("ConsumptionValue", Int)
 			Response(StatusOK)
 		})
 	})

@@ -55,9 +55,9 @@ func DecodeGetLicenseRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 	}
 }
 
-// EncodeUpdateLicenseResponse returns an encoder for responses returned by the
-// licenseRec UpdateLicense endpoint.
-func EncodeUpdateLicenseResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+// EncodeUpdateDeviceLicenseResponse returns an encoder for responses returned
+// by the licenseRec UpdateDeviceLicense endpoint.
+func EncodeUpdateDeviceLicenseResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
 		res := v.(int)
 		enc := encoder(ctx, w)
@@ -67,9 +67,9 @@ func EncodeUpdateLicenseResponse(encoder func(context.Context, http.ResponseWrit
 	}
 }
 
-// DecodeUpdateLicenseRequest returns a decoder for requests sent to the
-// licenseRec UpdateLicense endpoint.
-func DecodeUpdateLicenseRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+// DecodeUpdateDeviceLicenseRequest returns a decoder for requests sent to the
+// licenseRec UpdateDeviceLicense endpoint.
+func DecodeUpdateDeviceLicenseRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
 			licenseID int
@@ -88,7 +88,55 @@ func DecodeUpdateLicenseRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 		if err != nil {
 			return nil, err
 		}
-		payload := NewUpdateLicenseLicenseObject(licenseID)
+		payload := NewUpdateDeviceLicenseLicenseObject(licenseID)
+
+		return payload, nil
+	}
+}
+
+// EncodeUpdateDeviceLicenseWithValueResponse returns an encoder for responses
+// returned by the licenseRec UpdateDeviceLicenseWithValue endpoint.
+func EncodeUpdateDeviceLicenseWithValueResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(int)
+		enc := encoder(ctx, w)
+		body := res
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeUpdateDeviceLicenseWithValueRequest returns a decoder for requests
+// sent to the licenseRec UpdateDeviceLicenseWithValue endpoint.
+func DecodeUpdateDeviceLicenseWithValueRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			licenseID        int
+			consumptionValue int
+			err              error
+
+			params = mux.Vars(r)
+		)
+		{
+			licenseIDRaw := params["LicenseID"]
+			v, err2 := strconv.ParseInt(licenseIDRaw, 10, strconv.IntSize)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("licenseID", licenseIDRaw, "integer"))
+			}
+			licenseID = int(v)
+		}
+		{
+			consumptionValueRaw := params["ConsumptionValue"]
+			v, err2 := strconv.ParseInt(consumptionValueRaw, 10, strconv.IntSize)
+			if err2 != nil {
+				err = goa.MergeErrors(err, goa.InvalidFieldTypeError("consumptionValue", consumptionValueRaw, "integer"))
+			}
+			consumptionValue = int(v)
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewUpdateDeviceLicenseWithValueLicenseConsumption(licenseID, consumptionValue)
 
 		return payload, nil
 	}

@@ -37,11 +37,35 @@ paths:
     post:
       tags:
       - licenseRec
-      summary: UpdateLicense licenseRec
-      description: Increments license count given the LicenseID
-      operationId: licenseRec#UpdateLicense
+      summary: UpdateDeviceLicense licenseRec
+      description: Increments device license count given the LicenseID
+      operationId: licenseRec#UpdateDeviceLicense
       parameters:
       - name: LicenseID
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            type: integer
+            format: int64
+      schemes:
+      - http
+  /api/licenses/post/{LicenseID}/{ConsumptionValue}:
+    post:
+      tags:
+      - licenseRec
+      summary: UpdateDeviceLicenseWithValue licenseRec
+      description: Increments license count given value
+      operationId: licenseRec#UpdateDeviceLicenseWithValue
+      parameters:
+      - name: LicenseID
+        in: path
+        required: true
+        type: integer
+      - name: ConsumptionValue
         in: path
         required: true
         type: integer

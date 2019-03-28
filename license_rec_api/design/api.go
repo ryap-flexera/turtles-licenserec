@@ -28,3 +28,12 @@ var LicenseObject = Type("LicenseObject", func() {
 	Attribute("LicenseID", Int)
 	Required("LicenseID")
 })
+
+var LicenseConsumption = Type("LicenseConsumption", func() {
+	TypeName("LicenseConsumption")
+	Attribute("LicenseID", Int)
+	Required("LicenseID")
+
+	Attribute("ConsumptionValue", Int)
+	Required("ConsumptionValue")
+})

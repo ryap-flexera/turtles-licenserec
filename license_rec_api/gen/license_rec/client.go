@@ -15,15 +15,17 @@ import (
 
 // Client is the "licenseRec" service client.
 type Client struct {
-	GetLicenseEndpoint    goa.Endpoint
-	UpdateLicenseEndpoint goa.Endpoint
+	GetLicenseEndpoint                   goa.Endpoint
+	UpdateDeviceLicenseEndpoint          goa.Endpoint
+	UpdateDeviceLicenseWithValueEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "licenseRec" service client given the endpoints.
-func NewClient(getLicense, updateLicense goa.Endpoint) *Client {
+func NewClient(getLicense, updateDeviceLicense, updateDeviceLicenseWithValue goa.Endpoint) *Client {
 	return &Client{
-		GetLicenseEndpoint:    getLicense,
-		UpdateLicenseEndpoint: updateLicense,
+		GetLicenseEndpoint:                   getLicense,
+		UpdateDeviceLicenseEndpoint:          updateDeviceLicense,
+		UpdateDeviceLicenseWithValueEndpoint: updateDeviceLicenseWithValue,
 	}
 }
 
@@ -37,10 +39,22 @@ func (c *Client) GetLicense(ctx context.Context, p *LicenseObject) (res int, err
 	return ires.(int), nil
 }
 
-// UpdateLicense calls the "UpdateLicense" endpoint of the "licenseRec" service.
-func (c *Client) UpdateLicense(ctx context.Context, p *LicenseObject) (res int, err error) {
+// UpdateDeviceLicense calls the "UpdateDeviceLicense" endpoint of the
+// "licenseRec" service.
+func (c *Client) UpdateDeviceLicense(ctx context.Context, p *LicenseObject) (res int, err error) {
 	var ires interface{}
-	ires, err = c.UpdateLicenseEndpoint(ctx, p)
+	ires, err = c.UpdateDeviceLicenseEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(int), nil
+}
+
+// UpdateDeviceLicenseWithValue calls the "UpdateDeviceLicenseWithValue"
+// endpoint of the "licenseRec" service.
+func (c *Client) UpdateDeviceLicenseWithValue(ctx context.Context, p *LicenseConsumption) (res int, err error) {
+	var ires interface{}
+	ires, err = c.UpdateDeviceLicenseWithValueEndpoint(ctx, p)
 	if err != nil {
 		return
 	}

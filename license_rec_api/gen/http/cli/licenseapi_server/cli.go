@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `license-rec (get-license|update-license)
+	return `license-rec (get-license|update-device-license|update-device-license-with-value)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` license-rec get-license --licenseid 4349467455975369949` + "\n" +
+	return os.Args[0] + ` license-rec get-license --licenseid 4847839135972539348` + "\n" +
 		""
 }
 
@@ -48,12 +48,17 @@ func ParseEndpoint(
 		licenseRecGetLicenseFlags         = flag.NewFlagSet("get-license", flag.ExitOnError)
 		licenseRecGetLicenseLicenseIDFlag = licenseRecGetLicenseFlags.String("licenseid", "REQUIRED", "")
 
-		licenseRecUpdateLicenseFlags         = flag.NewFlagSet("update-license", flag.ExitOnError)
-		licenseRecUpdateLicenseLicenseIDFlag = licenseRecUpdateLicenseFlags.String("licenseid", "REQUIRED", "")
+		licenseRecUpdateDeviceLicenseFlags         = flag.NewFlagSet("update-device-license", flag.ExitOnError)
+		licenseRecUpdateDeviceLicenseLicenseIDFlag = licenseRecUpdateDeviceLicenseFlags.String("licenseid", "REQUIRED", "")
+
+		licenseRecUpdateDeviceLicenseWithValueFlags                = flag.NewFlagSet("update-device-license-with-value", flag.ExitOnError)
+		licenseRecUpdateDeviceLicenseWithValueLicenseIDFlag        = licenseRecUpdateDeviceLicenseWithValueFlags.String("licenseid", "REQUIRED", "")
+		licenseRecUpdateDeviceLicenseWithValueConsumptionValueFlag = licenseRecUpdateDeviceLicenseWithValueFlags.String("consumption-value", "REQUIRED", "")
 	)
 	licenseRecFlags.Usage = licenseRecUsage
 	licenseRecGetLicenseFlags.Usage = licenseRecGetLicenseUsage
-	licenseRecUpdateLicenseFlags.Usage = licenseRecUpdateLicenseUsage
+	licenseRecUpdateDeviceLicenseFlags.Usage = licenseRecUpdateDeviceLicenseUsage
+	licenseRecUpdateDeviceLicenseWithValueFlags.Usage = licenseRecUpdateDeviceLicenseWithValueUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -92,8 +97,11 @@ func ParseEndpoint(
 			case "get-license":
 				epf = licenseRecGetLicenseFlags
 
-			case "update-license":
-				epf = licenseRecUpdateLicenseFlags
+			case "update-device-license":
+				epf = licenseRecUpdateDeviceLicenseFlags
+
+			case "update-device-license-with-value":
+				epf = licenseRecUpdateDeviceLicenseWithValueFlags
 
 			}
 
@@ -123,9 +131,12 @@ func ParseEndpoint(
 			case "get-license":
 				endpoint = c.GetLicense()
 				data, err = licenserecc.BuildGetLicensePayload(*licenseRecGetLicenseLicenseIDFlag)
-			case "update-license":
-				endpoint = c.UpdateLicense()
-				data, err = licenserecc.BuildUpdateLicensePayload(*licenseRecUpdateLicenseLicenseIDFlag)
+			case "update-device-license":
+				endpoint = c.UpdateDeviceLicense()
+				data, err = licenserecc.BuildUpdateDeviceLicensePayload(*licenseRecUpdateDeviceLicenseLicenseIDFlag)
+			case "update-device-license-with-value":
+				endpoint = c.UpdateDeviceLicenseWithValue()
+				data, err = licenserecc.BuildUpdateDeviceLicenseWithValuePayload(*licenseRecUpdateDeviceLicenseWithValueLicenseIDFlag, *licenseRecUpdateDeviceLicenseWithValueConsumptionValueFlag)
 			}
 		}
 	}
@@ -145,7 +156,8 @@ Usage:
 
 COMMAND:
     get-license: Returns license count
-    update-license: Increments license count given the LicenseID
+    update-device-license: Increments device license count given the LicenseID
+    update-device-license-with-value: Increments license count given value
 
 Additional help:
     %s license-rec COMMAND --help
@@ -158,17 +170,29 @@ Returns license count
     -licenseid INT: 
 
 Example:
-    `+os.Args[0]+` license-rec get-license --licenseid 4349467455975369949
+    `+os.Args[0]+` license-rec get-license --licenseid 4847839135972539348
 `, os.Args[0])
 }
 
-func licenseRecUpdateLicenseUsage() {
-	fmt.Fprintf(os.Stderr, `%s [flags] license-rec update-license -licenseid INT
+func licenseRecUpdateDeviceLicenseUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] license-rec update-device-license -licenseid INT
 
-Increments license count given the LicenseID
+Increments device license count given the LicenseID
     -licenseid INT: 
 
 Example:
-    `+os.Args[0]+` license-rec update-license --licenseid 8948326394178106027
+    `+os.Args[0]+` license-rec update-device-license --licenseid 4326563986109237020
+`, os.Args[0])
+}
+
+func licenseRecUpdateDeviceLicenseWithValueUsage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] license-rec update-device-license-with-value -licenseid INT -consumption-value INT
+
+Increments license count given value
+    -licenseid INT: 
+    -consumption-value INT: 
+
+Example:
+    `+os.Args[0]+` license-rec update-device-license-with-value --licenseid 2716133480549925254 --consumption-value 3495748079444956790
 `, os.Args[0])
 }

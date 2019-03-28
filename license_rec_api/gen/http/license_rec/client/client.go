@@ -21,9 +21,13 @@ type Client struct {
 	// endpoint.
 	GetLicenseDoer goahttp.Doer
 
-	// UpdateLicense Doer is the HTTP client used to make requests to the
-	// UpdateLicense endpoint.
-	UpdateLicenseDoer goahttp.Doer
+	// UpdateDeviceLicense Doer is the HTTP client used to make requests to the
+	// UpdateDeviceLicense endpoint.
+	UpdateDeviceLicenseDoer goahttp.Doer
+
+	// UpdateDeviceLicenseWithValue Doer is the HTTP client used to make requests
+	// to the UpdateDeviceLicenseWithValue endpoint.
+	UpdateDeviceLicenseWithValueDoer goahttp.Doer
 
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
@@ -45,13 +49,14 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		GetLicenseDoer:      doer,
-		UpdateLicenseDoer:   doer,
-		RestoreResponseBody: restoreBody,
-		scheme:              scheme,
-		host:                host,
-		decoder:             dec,
-		encoder:             enc,
+		GetLicenseDoer:                   doer,
+		UpdateDeviceLicenseDoer:          doer,
+		UpdateDeviceLicenseWithValueDoer: doer,
+		RestoreResponseBody:              restoreBody,
+		scheme:                           scheme,
+		host:                             host,
+		decoder:                          dec,
+		encoder:                          enc,
 	}
 }
 
@@ -75,21 +80,41 @@ func (c *Client) GetLicense() goa.Endpoint {
 	}
 }
 
-// UpdateLicense returns an endpoint that makes HTTP requests to the licenseRec
-// service UpdateLicense server.
-func (c *Client) UpdateLicense() goa.Endpoint {
+// UpdateDeviceLicense returns an endpoint that makes HTTP requests to the
+// licenseRec service UpdateDeviceLicense server.
+func (c *Client) UpdateDeviceLicense() goa.Endpoint {
 	var (
-		decodeResponse = DecodeUpdateLicenseResponse(c.decoder, c.RestoreResponseBody)
+		decodeResponse = DecodeUpdateDeviceLicenseResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
-		req, err := c.BuildUpdateLicenseRequest(ctx, v)
+		req, err := c.BuildUpdateDeviceLicenseRequest(ctx, v)
 		if err != nil {
 			return nil, err
 		}
-		resp, err := c.UpdateLicenseDoer.Do(req)
+		resp, err := c.UpdateDeviceLicenseDoer.Do(req)
 
 		if err != nil {
-			return nil, goahttp.ErrRequestError("licenseRec", "UpdateLicense", err)
+			return nil, goahttp.ErrRequestError("licenseRec", "UpdateDeviceLicense", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// UpdateDeviceLicenseWithValue returns an endpoint that makes HTTP requests to
+// the licenseRec service UpdateDeviceLicenseWithValue server.
+func (c *Client) UpdateDeviceLicenseWithValue() goa.Endpoint {
+	var (
+		decodeResponse = DecodeUpdateDeviceLicenseWithValueResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildUpdateDeviceLicenseWithValueRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.UpdateDeviceLicenseWithValueDoer.Do(req)
+
+		if err != nil {
+			return nil, goahttp.ErrRequestError("licenseRec", "UpdateDeviceLicenseWithValue", err)
 		}
 		return decodeResponse(resp)
 	}

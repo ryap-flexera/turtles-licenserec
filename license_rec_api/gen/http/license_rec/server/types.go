@@ -19,10 +19,19 @@ func NewGetLicenseLicenseObject(licenseID int) *licenserec.LicenseObject {
 	}
 }
 
-// NewUpdateLicenseLicenseObject builds a licenseRec service UpdateLicense
-// endpoint payload.
-func NewUpdateLicenseLicenseObject(licenseID int) *licenserec.LicenseObject {
+// NewUpdateDeviceLicenseLicenseObject builds a licenseRec service
+// UpdateDeviceLicense endpoint payload.
+func NewUpdateDeviceLicenseLicenseObject(licenseID int) *licenserec.LicenseObject {
 	return &licenserec.LicenseObject{
 		LicenseID: licenseID,
+	}
+}
+
+// NewUpdateDeviceLicenseWithValueLicenseConsumption builds a licenseRec
+// service UpdateDeviceLicenseWithValue endpoint payload.
+func NewUpdateDeviceLicenseWithValueLicenseConsumption(licenseID int, consumptionValue int) *licenserec.LicenseConsumption {
+	return &licenserec.LicenseConsumption{
+		LicenseID:        licenseID,
+		ConsumptionValue: consumptionValue,
 	}
 }

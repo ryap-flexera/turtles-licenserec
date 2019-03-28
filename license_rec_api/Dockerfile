@@ -13,3 +13,5 @@ EXPOSE 8080
 
 # Run the executable
 ENTRYPOINT ["licenseapi_server"]
+
+CMD ["-domain", "0.0.0.0:8080"]

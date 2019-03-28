@@ -18,9 +18,10 @@ import (
 
 // Server lists the licenseRec service endpoint HTTP handlers.
 type Server struct {
-	Mounts        []*MountPoint
-	GetLicense    http.Handler
-	UpdateLicense http.Handler
+	Mounts                       []*MountPoint
+	GetLicense                   http.Handler
+	UpdateDeviceLicense          http.Handler
+	UpdateDeviceLicenseWithValue http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -51,10 +52,12 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"GetLicense", "GET", "/api/licenses/get/{LicenseID}"},
-			{"UpdateLicense", "POST", "/api/licenses/post/{LicenseID}"},
+			{"UpdateDeviceLicense", "POST", "/api/licenses/post/{LicenseID}"},
+			{"UpdateDeviceLicenseWithValue", "POST", "/api/licenses/post/{LicenseID}/{ConsumptionValue}"},
 		},
-		GetLicense:    NewGetLicenseHandler(e.GetLicense, mux, dec, enc, eh),
-		UpdateLicense: NewUpdateLicenseHandler(e.UpdateLicense, mux, dec, enc, eh),
+		GetLicense:                   NewGetLicenseHandler(e.GetLicense, mux, dec, enc, eh),
+		UpdateDeviceLicense:          NewUpdateDeviceLicenseHandler(e.UpdateDeviceLicense, mux, dec, enc, eh),
+		UpdateDeviceLicenseWithValue: NewUpdateDeviceLicenseWithValueHandler(e.UpdateDeviceLicenseWithValue, mux, dec, enc, eh),
 	}
 }
 
@@ -64,13 +67,15 @@ func (s *Server) Service() string { return "licenseRec" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetLicense = m(s.GetLicense)
-	s.UpdateLicense = m(s.UpdateLicense)
+	s.UpdateDeviceLicense = m(s.UpdateDeviceLicense)
+	s.UpdateDeviceLicenseWithValue = m(s.UpdateDeviceLicenseWithValue)
 }
 
 // Mount configures the mux to serve the licenseRec endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetLicenseHandler(mux, h.GetLicense)
-	MountUpdateLicenseHandler(mux, h.UpdateLicense)
+	MountUpdateDeviceLicenseHandler(mux, h.UpdateDeviceLicense)
+	MountUpdateDeviceLicenseWithValueHandler(mux, h.UpdateDeviceLicenseWithValue)
 }
 
 // MountGetLicenseHandler configures the mux to serve the "licenseRec" service
@@ -125,9 +130,9 @@ func NewGetLicenseHandler(
 	})
 }
 
-// MountUpdateLicenseHandler configures the mux to serve the "licenseRec"
-// service "UpdateLicense" endpoint.
-func MountUpdateLicenseHandler(mux goahttp.Muxer, h http.Handler) {
+// MountUpdateDeviceLicenseHandler configures the mux to serve the "licenseRec"
+// service "UpdateDeviceLicense" endpoint.
+func MountUpdateDeviceLicenseHandler(mux goahttp.Muxer, h http.Handler) {
 	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
@@ -137,9 +142,9 @@ func MountUpdateLicenseHandler(mux goahttp.Muxer, h http.Handler) {
 	mux.Handle("POST", "/api/licenses/post/{LicenseID}", f)
 }
 
-// NewUpdateLicenseHandler creates a HTTP handler which loads the HTTP request
-// and calls the "licenseRec" service "UpdateLicense" endpoint.
-func NewUpdateLicenseHandler(
+// NewUpdateDeviceLicenseHandler creates a HTTP handler which loads the HTTP
+// request and calls the "licenseRec" service "UpdateDeviceLicense" endpoint.
+func NewUpdateDeviceLicenseHandler(
 	endpoint goa.Endpoint,
 	mux goahttp.Muxer,
 	dec func(*http.Request) goahttp.Decoder,
@@ -147,13 +152,66 @@ func NewUpdateLicenseHandler(
 	eh func(context.Context, http.ResponseWriter, error),
 ) http.Handler {
 	var (
-		decodeRequest  = DecodeUpdateLicenseRequest(mux, dec)
-		encodeResponse = EncodeUpdateLicenseResponse(enc)
+		decodeRequest  = DecodeUpdateDeviceLicenseRequest(mux, dec)
+		encodeResponse = EncodeUpdateDeviceLicenseResponse(enc)
 		encodeError    = goahttp.ErrorEncoder(enc)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
-		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateLicense")
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateDeviceLicense")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "licenseRec")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+
+		res, err := endpoint(ctx, payload)
+
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				eh(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			eh(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateDeviceLicenseWithValueHandler configures the mux to serve the
+// "licenseRec" service "UpdateDeviceLicenseWithValue" endpoint.
+func MountUpdateDeviceLicenseWithValueHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/api/licenses/post/{LicenseID}/{ConsumptionValue}", f)
+}
+
+// NewUpdateDeviceLicenseWithValueHandler creates a HTTP handler which loads
+// the HTTP request and calls the "licenseRec" service
+// "UpdateDeviceLicenseWithValue" endpoint.
+func NewUpdateDeviceLicenseWithValueHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	dec func(*http.Request) goahttp.Decoder,
+	enc func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	eh func(context.Context, http.ResponseWriter, error),
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateDeviceLicenseWithValueRequest(mux, dec)
+		encodeResponse = EncodeUpdateDeviceLicenseWithValueResponse(enc)
+		encodeError    = goahttp.ErrorEncoder(enc)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateDeviceLicenseWithValue")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "licenseRec")
 		payload, err := decodeRequest(r)
 		if err != nil {

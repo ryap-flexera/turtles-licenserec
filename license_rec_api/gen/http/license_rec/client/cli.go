@@ -36,14 +36,14 @@ func BuildGetLicensePayload(licenseRecGetLicenseLicenseID string) (*licenserec.L
 	return payload, nil
 }
 
-// BuildUpdateLicensePayload builds the payload for the licenseRec
-// UpdateLicense endpoint from CLI flags.
-func BuildUpdateLicensePayload(licenseRecUpdateLicenseLicenseID string) (*licenserec.LicenseObject, error) {
+// BuildUpdateDeviceLicensePayload builds the payload for the licenseRec
+// UpdateDeviceLicense endpoint from CLI flags.
+func BuildUpdateDeviceLicensePayload(licenseRecUpdateDeviceLicenseLicenseID string) (*licenserec.LicenseObject, error) {
 	var err error
 	var licenseID int
 	{
 		var v int64
-		v, err = strconv.ParseInt(licenseRecUpdateLicenseLicenseID, 10, 64)
+		v, err = strconv.ParseInt(licenseRecUpdateDeviceLicenseLicenseID, 10, 64)
 		licenseID = int(v)
 		if err != nil {
 			err = fmt.Errorf("invalid value for licenseID, must be INT")
@@ -54,6 +54,38 @@ func BuildUpdateLicensePayload(licenseRecUpdateLicenseLicenseID string) (*licens
 	}
 	payload := &licenserec.LicenseObject{
 		LicenseID: licenseID,
+	}
+	return payload, nil
+}
+
+// BuildUpdateDeviceLicenseWithValuePayload builds the payload for the
+// licenseRec UpdateDeviceLicenseWithValue endpoint from CLI flags.
+func BuildUpdateDeviceLicenseWithValuePayload(licenseRecUpdateDeviceLicenseWithValueLicenseID string, licenseRecUpdateDeviceLicenseWithValueConsumptionValue string) (*licenserec.LicenseConsumption, error) {
+	var err error
+	var licenseID int
+	{
+		var v int64
+		v, err = strconv.ParseInt(licenseRecUpdateDeviceLicenseWithValueLicenseID, 10, 64)
+		licenseID = int(v)
+		if err != nil {
+			err = fmt.Errorf("invalid value for licenseID, must be INT")
+		}
+	}
+	var consumptionValue int
+	{
+		var v int64
+		v, err = strconv.ParseInt(licenseRecUpdateDeviceLicenseWithValueConsumptionValue, 10, 64)
+		consumptionValue = int(v)
+		if err != nil {
+			err = fmt.Errorf("invalid value for consumptionValue, must be INT")
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	payload := &licenserec.LicenseConsumption{
+		LicenseID:        licenseID,
+		ConsumptionValue: consumptionValue,
 	}
 	return payload, nil
 }

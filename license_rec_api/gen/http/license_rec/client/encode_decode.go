@@ -78,23 +78,24 @@ func DecodeGetLicenseResponse(decoder func(*http.Response) goahttp.Decoder, rest
 	}
 }
 
-// BuildUpdateLicenseRequest instantiates a HTTP request object with method and
-// path set to call the "licenseRec" service "UpdateLicense" endpoint
-func (c *Client) BuildUpdateLicenseRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+// BuildUpdateDeviceLicenseRequest instantiates a HTTP request object with
+// method and path set to call the "licenseRec" service "UpdateDeviceLicense"
+// endpoint
+func (c *Client) BuildUpdateDeviceLicenseRequest(ctx context.Context, v interface{}) (*http.Request, error) {
 	var (
 		licenseID int
 	)
 	{
 		p, ok := v.(*licenserec.LicenseObject)
 		if !ok {
-			return nil, goahttp.ErrInvalidType("licenseRec", "UpdateLicense", "*licenserec.LicenseObject", v)
+			return nil, goahttp.ErrInvalidType("licenseRec", "UpdateDeviceLicense", "*licenserec.LicenseObject", v)
 		}
 		licenseID = p.LicenseID
 	}
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateLicenseLicenseRecPath(licenseID)}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateDeviceLicenseLicenseRecPath(licenseID)}
 	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
-		return nil, goahttp.ErrInvalidURL("licenseRec", "UpdateLicense", u.String(), err)
+		return nil, goahttp.ErrInvalidURL("licenseRec", "UpdateDeviceLicense", u.String(), err)
 	}
 	if ctx != nil {
 		req = req.WithContext(ctx)
@@ -103,10 +104,10 @@ func (c *Client) BuildUpdateLicenseRequest(ctx context.Context, v interface{}) (
 	return req, nil
 }
 
-// DecodeUpdateLicenseResponse returns a decoder for responses returned by the
-// licenseRec UpdateLicense endpoint. restoreBody controls whether the response
-// body should be restored after having been read.
-func DecodeUpdateLicenseResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+// DecodeUpdateDeviceLicenseResponse returns a decoder for responses returned
+// by the licenseRec UpdateDeviceLicense endpoint. restoreBody controls whether
+// the response body should be restored after having been read.
+func DecodeUpdateDeviceLicenseResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
 			b, err := ioutil.ReadAll(resp.Body)
@@ -128,12 +129,76 @@ func DecodeUpdateLicenseResponse(decoder func(*http.Response) goahttp.Decoder, r
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
-				return nil, goahttp.ErrDecodingError("licenseRec", "UpdateLicense", err)
+				return nil, goahttp.ErrDecodingError("licenseRec", "UpdateDeviceLicense", err)
 			}
 			return body, nil
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("licenseRec", "UpdateLicense", resp.StatusCode, string(body))
+			return nil, goahttp.ErrInvalidResponse("licenseRec", "UpdateDeviceLicense", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildUpdateDeviceLicenseWithValueRequest instantiates a HTTP request object
+// with method and path set to call the "licenseRec" service
+// "UpdateDeviceLicenseWithValue" endpoint
+func (c *Client) BuildUpdateDeviceLicenseWithValueRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		licenseID        int
+		consumptionValue int
+	)
+	{
+		p, ok := v.(*licenserec.LicenseConsumption)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("licenseRec", "UpdateDeviceLicenseWithValue", "*licenserec.LicenseConsumption", v)
+		}
+		licenseID = p.LicenseID
+		consumptionValue = p.ConsumptionValue
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateDeviceLicenseWithValueLicenseRecPath(licenseID, consumptionValue)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("licenseRec", "UpdateDeviceLicenseWithValue", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeUpdateDeviceLicenseWithValueResponse returns a decoder for responses
+// returned by the licenseRec UpdateDeviceLicenseWithValue endpoint.
+// restoreBody controls whether the response body should be restored after
+// having been read.
+func DecodeUpdateDeviceLicenseWithValueResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body int
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("licenseRec", "UpdateDeviceLicenseWithValue", err)
+			}
+			return body, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("licenseRec", "UpdateDeviceLicenseWithValue", resp.StatusCode, string(body))
 		}
 	}
 }

@@ -15,22 +15,25 @@ import (
 
 // Endpoints wraps the "licenseRec" service endpoints.
 type Endpoints struct {
-	GetLicense    goa.Endpoint
-	UpdateLicense goa.Endpoint
+	GetLicense                   goa.Endpoint
+	UpdateDeviceLicense          goa.Endpoint
+	UpdateDeviceLicenseWithValue goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "licenseRec" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		GetLicense:    NewGetLicenseEndpoint(s),
-		UpdateLicense: NewUpdateLicenseEndpoint(s),
+		GetLicense:                   NewGetLicenseEndpoint(s),
+		UpdateDeviceLicense:          NewUpdateDeviceLicenseEndpoint(s),
+		UpdateDeviceLicenseWithValue: NewUpdateDeviceLicenseWithValueEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "licenseRec" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetLicense = m(e.GetLicense)
-	e.UpdateLicense = m(e.UpdateLicense)
+	e.UpdateDeviceLicense = m(e.UpdateDeviceLicense)
+	e.UpdateDeviceLicenseWithValue = m(e.UpdateDeviceLicenseWithValue)
 }
 
 // NewGetLicenseEndpoint returns an endpoint function that calls the method
@@ -42,11 +45,20 @@ func NewGetLicenseEndpoint(s Service) goa.Endpoint {
 	}
 }
 
-// NewUpdateLicenseEndpoint returns an endpoint function that calls the method
-// "UpdateLicense" of service "licenseRec".
-func NewUpdateLicenseEndpoint(s Service) goa.Endpoint {
+// NewUpdateDeviceLicenseEndpoint returns an endpoint function that calls the
+// method "UpdateDeviceLicense" of service "licenseRec".
+func NewUpdateDeviceLicenseEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*LicenseObject)
-		return s.UpdateLicense(ctx, p)
+		return s.UpdateDeviceLicense(ctx, p)
+	}
+}
+
+// NewUpdateDeviceLicenseWithValueEndpoint returns an endpoint function that
+// calls the method "UpdateDeviceLicenseWithValue" of service "licenseRec".
+func NewUpdateDeviceLicenseWithValueEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*LicenseConsumption)
+		return s.UpdateDeviceLicenseWithValue(ctx, p)
 	}
 }

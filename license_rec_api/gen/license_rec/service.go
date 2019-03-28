@@ -15,8 +15,10 @@ import (
 type Service interface {
 	// Returns license count
 	GetLicense(context.Context, *LicenseObject) (res int, err error)
-	// Increments license count given the LicenseID
-	UpdateLicense(context.Context, *LicenseObject) (res int, err error)
+	// Increments device license count given the LicenseID
+	UpdateDeviceLicense(context.Context, *LicenseObject) (res int, err error)
+	// Increments license count given value
+	UpdateDeviceLicenseWithValue(context.Context, *LicenseConsumption) (res int, err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -27,10 +29,17 @@ const ServiceName = "licenseRec"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [2]string{"GetLicense", "UpdateLicense"}
+var MethodNames = [3]string{"GetLicense", "UpdateDeviceLicense", "UpdateDeviceLicenseWithValue"}
 
 // LicenseObject is the payload type of the licenseRec service GetLicense
 // method.
 type LicenseObject struct {
 	LicenseID int
+}
+
+// LicenseConsumption is the payload type of the licenseRec service
+// UpdateDeviceLicenseWithValue method.
+type LicenseConsumption struct {
+	LicenseID        int
+	ConsumptionValue int
 }
